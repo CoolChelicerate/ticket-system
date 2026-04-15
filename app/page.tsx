@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import "./globals.css";
 
 export default function Home() {
@@ -6,16 +9,18 @@ export default function Home() {
     <div>
       <h1>Customer Interaction Logger Application</h1>
       <hr />
-      <table className="log-summary-table">
-        <tbody>
-          <tr>
-            <th>Urgent Logs: {urgentLogs}</th>
-            <th>New Logs: {newLogs}</th>
-            <th>Open Logs: {openLogs}</th>
-            <th>Closed Logs: {closedLogs}</th>
-          </tr>
-        </tbody>
-      </table>
+      <div className="dashboard">
+        <div className="dash-col">Report Status</div>
+        <div className="dash-col">Frequent Issues</div>
+        <div className="dash-col">Frequent Issues by Department</div>
+      </div>
+      <hr />
+      <div className="log-summary">
+        <div className="log-col">Urgent Logs: {urgentLogs}</div>
+        <div className="log-col">New Logs: {newLogs}</div>
+        <div className="log-col">Open Logs: {openLogs}</div>
+        <div className="log-col">Closed Logs: {closedLogs}</div>     
+      </div>
       <div>
         <h2>Logs</h2>
       </div>

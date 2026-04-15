@@ -1,14 +1,36 @@
-.log-summary-table {
-    margin: 5px;
+.dash-col {
+    font-size: x-large;
+    font-weight: 500;
+    float: left;
+    width: 25%;
+    height: 100px;
 }
 
-.log-summary-table th, 
-.log-summary-table td {
-    margin: 5px;
-    padding: 15px;
+.dashboard:after {
+    content: "";
+    display: table;
+    clear: both;
 }
-.log-summary-table th {
-    font-size:xx-large;
+
+
+.log-col {
+    font-size: xx-large;
+    font-weight: bold;
+    float: left;
+    width: 25%;
+    height: 100px;
+}
+
+.log-summary:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+@media screen and (max-width: 600px) {
+    .log-col {
+        width: 100%;
+    }
 }
 
 .log-table table, th, td {
