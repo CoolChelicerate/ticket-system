@@ -1,10 +1,21 @@
 import "./globals.css";
 
 export default function Home() {
+  let urgentLogs = 9, newLogs = 5, openLogs = 17, closedLogs = 184;
   return (
     <div>
       <h1>Customer Interaction Logger Application</h1>
       <hr />
+      <table className="log-summary-table">
+        <tbody>
+          <tr>
+            <th>Urgent Logs: {urgentLogs}</th>
+            <th>New Logs: {newLogs}</th>
+            <th>Open Logs: {openLogs}</th>
+            <th>Closed Logs: {closedLogs}</th>
+          </tr>
+        </tbody>
+      </table>
       <div>
         <h2>Logs</h2>
       </div>
@@ -18,7 +29,7 @@ export default function Home() {
               <th>Status</th>
               <th>Date/Time Reported</th>
               <th>Date/Time Resolved</th>
-              <th><button>Add New Log</button></th>
+              <th><button>+</button></th>
             </tr>
           </thead>
           <tbody>
@@ -34,7 +45,7 @@ export default function Home() {
             <tr>
               <td>Jane Doe</td>
               <td>Employee</td>
-              <td>Customer praised Mary's attitude</td>
+              <td>Customer unhappy with current pinpad system</td>
               <td>Resolved</td>
               <td>3/23/2026 14:23</td>
               <td>3/28/2026 7:00</td>
@@ -59,7 +70,7 @@ export default function Home() {
             <th>Name</th>
             <th>Position</th>
             <th>Department</th>
-            <th><button>Add New Agent</button></th>
+            <th><button>+</button></th>
           </tr>
         </thead>
         <tbody>

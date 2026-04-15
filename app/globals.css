@@ -1,3 +1,20 @@
-.topnav a{
-    padding: 14px 16px;
+.log-summary-table {
+    margin: 5px;
+}
+
+.log-summary-table th, 
+.log-summary-table td {
+    margin: 5px;
+    padding: 15px;
+}
+.log-summary-table th {
+    font-size:xx-large;
+}
+
+.log-table table, th, td {
+    border: 1.5px solid black;
+}
+
+.log-table th, td {
+    padding: 5px;
 }
