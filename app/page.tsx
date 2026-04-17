@@ -31,15 +31,34 @@ export default function Home() {
   const newLogs = logs.filter(log => log.status === "New").length;
   const openLogs = logs.filter(log => log.status === "Open").length;
   const closedLogs = logs.filter(log => log.status === "Resolved").length;
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>){
+    setForm({...form, [e.target.name]: e.target.value});
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const now = new Date();
+    const dateReported = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    setLogs([...logs, {...form, dateReported}]);
+
+    setForm(emptyForm);
+
+    setShowModal(false);
+  }
   return (
     <div>
       <h1>Customer Interaction Logger Application</h1>
       <hr className="header-hr"/>
+
       <div className="dashboard">
         <div className="dash-col">Report Status</div>
         <div className="dash-col">Frequent Issues</div>
         <div className="dash-col">Frequent Issues by Department</div>
       </div>
+      
       <hr className="log-summary-hr"/>
       <div className="log-summary">
         <div className="log-col">Urgent Logs: {urgentLogs}</div>
@@ -47,10 +66,8 @@ export default function Home() {
         <div className="log-col">Open Logs: {openLogs}</div>
         <div className="log-col">Closed Logs: {closedLogs}</div>     
       </div>
-      <div>
-        <h2>Logs</h2>
-      </div>
-      <div>
+      
+      <h2>Logs</h2>
         <table className="log-table">
           <thead>
             <tr>
@@ -60,40 +77,62 @@ export default function Home() {
               <th>Status</th>
               <th>Date/Time Reported</th>
               <th>Date/Time Resolved</th>
-              <th><button>+</button></th>
+              <th><button onClick={() => setShowModal(true)}>+</button></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>John Doe</td>
-              <td>Employee</td>
-              <td>Customer complains regarding restroom cleanliness</td>
-              <td>Pending</td>
-              <td>4/10/2026 9:21</td>
-              <td>N/A</td>
-              <td><button>Edit</button></td>
-            </tr>
-            <tr>
-              <td>Jane Doe</td>
-              <td>Employee</td>
-              <td>Customer unhappy with current pinpad system</td>
-              <td>Resolved</td>
-              <td>3/23/2026 14:23</td>
-              <td>3/28/2026 7:00</td>
-              <td><button>Edit</button></td>
-            </tr>
-            <tr>
-              <td>John Johnson</td>
-              <td>Customer</td>
-              <td>Water leaking near deli</td>
-              <td>Urgent</td>
-              <td>4/14/2026 20:04</td>
-              <td>N/A</td>
-              <td><button>Edit</button></td>
-            </tr>
-            </tbody>
-          </table>
-      </div>
+            {logs.map((log, i) => (
+              <tr key={i}>
+                <td>{log.name}</td>
+                <td>{log.group}</td>
+                <td>{log.description}</td>
+                <td>{log.status}</td>
+                <td>{log.dateReported}</td>
+                <td>{log.dateResolved}</td>
+                <td><button>Edit</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>New Log</h3>
+              <form onSubmit={handleSubmit}>
+                <label>Name</label>
+                <input name="name" value={form.name} onChange={handleChange} required />
+
+                <label>Group</label>
+                <select name="group" value={form.group} onChange={handleChange} required>
+                  <option value="">-- Select --</option>
+                  <option value="Employee">Employee</option>
+                  <option value="Customer">Customer</option>
+                </select>
+
+                <label>Description</label>
+                <textarea name="description" value={form.description} onChange={handleChange} required />
+
+                <label>Status</label>
+                <select name="status" value={form.status} onChange={handleChange}>
+                  <option value="New">New</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Open">Open</option>
+                  <option value="Urgent">Urgent</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+
+                <label>Date/Time Resolved</label>
+                <input name="dateResolved" value={form.dateResolved} onChange={handleChange} placeholder="N/A" />
+
+                <div className="modal-actions">
+                  <button type="submit">Submit</button>
+                  <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
+                </div>
+              </form>
+            </div>
+        )}
+    
       <h2>Agents</h2>
       <table className="agent-table">
       <thead>
