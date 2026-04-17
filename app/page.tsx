@@ -5,19 +5,42 @@ import "./globals.css";
 
 import { LineChart, PieChart } from 'react-chartkick'
 import "chartkick/chart.js"
+
+type Log = {
+  name: string;
+  group: string;
+  description: string;
+  status: string;
+  dateReported: string;
+  dateResolved: string;
+}
+
+const initialLogs: Log[] = [];
+
+const emptyForm: Log = {
+  name: "", group: "", description: "", status: "New",
+  dateReported: "", dateResolved: "N/A",
+};
  
 export default function Home() {
-  let urgentLogs = 9, newLogs = 5, openLogs = 17, closedLogs = 184;
+  const [logs, setLogs] = useState<Log[]>(initialLogs);
+  const [showModal, setShowModal] =useState(false);
+  const [form, setForm] = useState<Log>(emptyForm);
+
+  const urgentLogs = logs.filter(log => log.status === "Urgent").length;
+  const newLogs = logs.filter(log => log.status === "New").length;
+  const openLogs = logs.filter(log => log.status === "Open").length;
+  const closedLogs = logs.filter(log => log.status === "Resolved").length;
   return (
     <div>
       <h1>Customer Interaction Logger Application</h1>
-      <hr />
+      <hr className="header-hr"/>
       <div className="dashboard">
         <div className="dash-col">Report Status</div>
         <div className="dash-col">Frequent Issues</div>
         <div className="dash-col">Frequent Issues by Department</div>
       </div>
-      <hr />
+      <hr className="log-summary-hr"/>
       <div className="log-summary">
         <div className="log-col">Urgent Logs: {urgentLogs}</div>
         <div className="log-col">New Logs: {newLogs}</div>
@@ -31,9 +54,9 @@ export default function Home() {
         <table className="log-table">
           <thead>
             <tr>
-              <th>Requester</th>
+              <th>Name</th>
               <th>Group</th>
-              <th>Report</th>
+              <th>Description</th>
               <th>Status</th>
               <th>Date/Time Reported</th>
               <th>Date/Time Resolved</th>

@@ -1,9 +1,16 @@
+.header-hr {
+    border: solid;
+}
+
 .dash-col {
     font-size: x-large;
     font-weight: 500;
     float: left;
     width: 25%;
     height: 100px;
+    background-color: gray;
+    padding: 20px;
+    margin: 5px;
 }
 
 .dashboard:after {
@@ -16,8 +23,16 @@
     font-size: xx-large;
     font-weight: bold;
     float: left;
-    width: 25%;
+    width: 20%;
     height: 100px;
+    background-color: lightgrey;
+    margin: 10px;
+}
+
+.log-summary-hr {
+    border: solid;
+    border-color: black;
+    border-radius: 2px;
 }
 
 .log-summary:after {
@@ -38,4 +53,12 @@
 
 .log-table th, td {
     padding: 5px;
+}
+
+.log-table th {
+    background-color: lightblue;
+}
+
+.agent-table th {
+    background-color: lightblue;
 }
