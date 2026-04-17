@@ -29,7 +29,9 @@
     margin-top: 8px;
 }
 
-.modal input. .modal select, .modal textarea {
+.modal input,
+.modal select, 
+.modal textarea {
     width: 100%;
     padding: 6px 8px;
     border: 1px solid #ccc;

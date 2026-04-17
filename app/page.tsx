@@ -24,7 +24,7 @@ const emptyForm: Log = {
  
 export default function Home() {
   const [logs, setLogs] = useState<Log[]>(initialLogs);
-  const [showModal, setShowModal] =useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<Log>(emptyForm);
 
   const urgentLogs = logs.filter(log => log.status === "Urgent").length;
@@ -131,6 +131,7 @@ export default function Home() {
                 </div>
               </form>
             </div>
+          </div>
         )}
     
       <h2>Agents</h2>
