@@ -34,6 +34,13 @@ export default function Home() {
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
+  const statusChartData = {
+    "Urgent": urgentLogs,
+    "New": newLogs,
+    "Open": openLogs,
+    "Closed": closedLogs,
+  };
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>){
     setForm({...form, [e.target.name]: e.target.value});
   }
@@ -62,17 +69,19 @@ export default function Home() {
       <hr className="header-hr"/>
 
       <div className="dashboard">
-        <div className="dash-col">Report Status</div>
+        <div className="dash-col">Report Status
+          <PieChart data={statusChartData} />
+        </div>
         <div className="dash-col">Frequent Issues</div>
         <div className="dash-col">Frequent Issues by Department</div>
       </div>
       
       <hr className="log-summary-hr"/>
       <div className="log-summary">
-        <div className="log-col">Urgent Logs: {urgentLogs}</div>
-        <div className="log-col">New Logs: {newLogs}</div>
-        <div className="log-col">Open Logs: {openLogs}</div>
-        <div className="log-col">Closed Logs: {closedLogs}</div>     
+        <div className="log-col" id="urgent-log-col">Urgent Logs: {urgentLogs}</div>
+        <div className="log-col" id="new-log-col">New Logs: {newLogs}</div>
+        <div className="log-col"id="open-log-col">Open Logs: {openLogs}</div>
+        <div className="log-col" id="closed-log-col">Closed Logs: {closedLogs}</div>     
       </div>
       
       <h2>Logs</h2>
