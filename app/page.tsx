@@ -58,7 +58,7 @@ export default function Home() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleLogSubmit(e: React.ChangeEvent) {
+  function handleLogSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const now = new Date();
@@ -80,193 +80,217 @@ export default function Home() {
     setShowModal(false);
   }
   return (
-    <div>
-      <h1 id="app-title">Customer Interaction Logger Application</h1>
-      <hr className="header-hr" />
-      <h1>Dashboard</h1>
+    <>
+      <head>
+        <script
+          src="https://kit.fontawesome.com/32c2532505.js"
+          crossOrigin="anonymous"
+        ></script>
+      </head>
+      <div>
+        <h1 id="app-title">Customer Interaction Logger Application</h1>
+        <hr className="header-hr" />
+        <h1>Dashboard</h1>
 
-      <div className="dashboard">
-        <div className="dash-col">
-          Report Status
-          {isChartReady && <PieChart data={statusChartData} />}
+        <div className="dashboard">
+          <div className="dash-col">
+            Report Status
+            {isChartReady && <PieChart data={statusChartData} />}
+          </div>
+          <div className="dash-col" id="dash-urgent">
+            Urgent Issues
+            {logs.filter((log) => log.status === "Urgent").length > 0 ? (
+              <ul className="urgent-list">
+                {logs
+                  .filter((log) => log.status === "Urgent")
+                  .map((log, i) => (
+                    <li key={i}>
+                      {log.name} - {log.description}
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p style={{ fontSize: "25px" }}>All urgent issues resolved!</p>
+            )}
+          </div>
+          <div className="dash-col">Frequent Issues by Department</div>
         </div>
-        <div className="dash-col" id="dash-urgent">
-          Urgent Issues
-          {logs.filter((log) => log.status === "Urgent").length > 0 ? (
-            <ul className="urgent-list">
-              {logs
-                .filter((log) => log.status === "Urgent")
-                .map((log, i) => (
-                  <li key={i}>
-                    {log.name} - {log.description}
-                  </li>
-                ))}
-            </ul>
-          ) : (
-            <p style={{ fontSize: "14px" }}>No urgent issues</p>
-          )}
-        </div>
-        <div className="dash-col">Frequent Issues by Department</div>
-      </div>
 
-      <hr className="log-summary-hr" />
-      <div className="log-summary">
-        <div className="log-col" id="urgent-log-col">
-          Urgent Logs: {urgentLogs}
+        <hr className="log-summary-hr" />
+        <div className="log-summary">
+          <div className="log-col" id="urgent-log-col">
+            <i className="fa-solid fa-circle-exclamation"></i> Urgent Logs:{" "}
+            {urgentLogs}
+          </div>
+          <div className="log-col" id="new-log-col">
+            New Logs: {newLogs}
+          </div>
+          <div className="log-col" id="open-log-col">
+            Open Logs: {openLogs}
+          </div>
+          <div className="log-col" id="closed-log-col">
+            Closed Logs: {closedLogs}
+          </div>
         </div>
-        <div className="log-col" id="new-log-col">
-          New Logs: {newLogs}
-        </div>
-        <div className="log-col" id="open-log-col">
-          Open Logs: {openLogs}
-        </div>
-        <div className="log-col" id="closed-log-col">
-          Closed Logs: {closedLogs}
-        </div>
-      </div>
 
-      <h2>Logs</h2>
-      <table className="log-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Group</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Date/Time Reported</th>
-            <th>Date/Time Resolved</th>
-            <th>
-              <button
-                className="new-log-button"
-                onClick={() => setShowModal(true)}
-              >
-                Create New Log
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((log, i) => (
-            <tr key={i}>
-              <td>{log.name}</td>
-              <td>{log.group}</td>
-              <td id="log-desc">{log.description}</td>
-              <td>{log.status}</td>
-              <td>{log.dateReported}</td>
-              <td>{log.dateResolved}</td>
-              <td>
+        <h2 className="logs-header">
+          <i className="fa-solid fa-file-lines"></i> Logs
+        </h2>
+        <table className="log-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Group</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Date/Time Reported</th>
+              <th>Date/Time Resolved</th>
+              <th>
                 <button
-                  onClick={() => {
-                    setForm(logs[i]);
-                    setEditIndex(i);
-                    setShowModal(true);
-                  }}
+                  className="new-log-button"
+                  onClick={() => setShowModal(true)}
                 >
-                  Edit
+                  Create New Log
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {logs.map((log, i) => (
+              <tr key={i}>
+                <td>{log.name}</td>
+                <td>{log.group}</td>
+                <td id="log-desc">{log.description}</td>
+                <td>{log.status}</td>
+                <td>{log.dateReported}</td>
+                <td>{log.dateResolved}</td>
+                <td>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setForm(logs[i]);
+                      setEditIndex(i);
+                      setShowModal(true);
+                    }}
+                  >
+                    <i className="fa-solid fa-pen-to-square"></i>Edit
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>New Log</h3>
+              <form onSubmit={handleLogSubmit}>
+                <label>Name</label>
+                <input
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+
+                <label>Group</label>
+                <select
+                  name="group"
+                  value={form.group}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">-- Select --</option>
+                  <option value="Employee">Employee</option>
+                  <option value="Customer">Customer</option>
+                </select>
+
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  required
+                />
+
+                <label>Status</label>
+                <select
+                  name="status"
+                  value={form.status}
+                  onChange={handleChange}
+                >
+                  <option value="New">New</option>
+                  <option value="Open">Open</option>
+                  <option value="Urgent">Urgent</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+
+                <label>Date/Time Resolved</label>
+                <input
+                  name="dateResolved"
+                  value={form.dateResolved}
+                  onChange={handleChange}
+                  placeholder="N/A"
+                />
+
+                <div className="modal-actions">
+                  <button type="submit">Submit</button>
+                  <button type="button" onClick={() => setShowModal(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <h2 className="agents-header">
+          <i className="fa-solid fa-user-tie"></i> Agents
+        </h2>
+        <table className="agent-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Department</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>John Doe</td>
+              <td>Custodian</td>
+              <td>Sanitation</td>
+              <td>
+                <button>
+                  <i className="fa-solid fa-pen-to-square"></i>Edit
                 </button>
               </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>New Log</h3>
-            <form onSubmit={handleLogSubmit}>
-              <label>Name</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Group</label>
-              <select
-                name="group"
-                value={form.group}
-                onChange={handleChange}
-                required
-              >
-                <option value="">-- Select --</option>
-                <option value="Employee">Employee</option>
-                <option value="Customer">Customer</option>
-              </select>
-
-              <label>Description</label>
-              <textarea
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Status</label>
-              <select name="status" value={form.status} onChange={handleChange}>
-                <option value="New">New</option>
-                <option value="Open">Open</option>
-                <option value="Urgent">Urgent</option>
-                <option value="Resolved">Resolved</option>
-              </select>
-
-              <label>Date/Time Resolved</label>
-              <input
-                name="dateResolved"
-                value={form.dateResolved}
-                onChange={handleChange}
-                placeholder="N/A"
-              />
-
-              <div className="modal-actions">
-                <button type="submit">Submit</button>
-                <button type="button" onClick={() => setShowModal(false)}>
-                  Cancel
+            <tr>
+              <td>Jane Doe</td>
+              <td>Manager</td>
+              <td>Front End</td>
+              <td>
+                <button>
+                  <i className="fa-solid fa-pen-to-square"></i>Edit
                 </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      <h2>Agents</h2>
-      <table className="agent-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Department</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>Custodian</td>
-            <td>Sanitation</td>
-            <td>
-              <button>Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Jane Doe</td>
-            <td>Manager</td>
-            <td>Front End</td>
-            <td>
-              <button>Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mary Alvarez</td>
-            <td>Cashier</td>
-            <td>Front End</td>
-            <td>
-              <button>Edit</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Mary Alvarez</td>
+              <td>Cashier</td>
+              <td>Front End</td>
+              <td>
+                <button>
+                  <i className="fa-solid fa-pen-to-square"></i>Edit
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
