@@ -1,10 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import "./globals.css";
 
-import { LineChart, PieChart } from "react-chartkick";
+import { LineChart } from "react-chartkick";
 import "chartkick/chart.js";
+
+type PieChartProps = {
+  data: Record<string, number>;
+  colors?: string[];
+};
+
+const PieChart = dynamic<PieChartProps>(
+  () => import("react-chartkick").then(({ PieChart }) => PieChart),
+  { ssr: false },
+);
+
+type Agent = {
+  name: string;
+  position: string;
+  department: string;
+};
 
 type Log = {
   name: string;
@@ -28,6 +45,7 @@ const emptyForm: Log = {
 
 export default function Home() {
   const [logs, setLogs] = useState<Log[]>(initialLogs);
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<Log>(emptyForm);
   const [isChartReady, setIsChartReady] = useState(false);
@@ -46,9 +64,219 @@ export default function Home() {
     Closed: closedLogs,
   };
 
+  const statusChartColors = ["#b22222", "#006400", "#00008b", "#daa520"];
+
   useEffect(() => {
     setIsChartReady(true);
   }, []);
+
+  function loadSampleData() {
+    const sampleLogs: Log[] = [
+      {
+        name: "John Smith",
+        group: "",
+        description: "Login issue",
+        status: "Resolved",
+        dateReported: "4/19/2026 10:00",
+        dateResolved: "4/19/2026 11:00",
+      },
+      {
+        name: "Jane Doe",
+        group: "",
+        description: "Payment failed",
+        status: "Open",
+        dateReported: "4/19/2026 9:30",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Bob Johnson",
+        group: "",
+        description: "Account locked",
+        status: "Urgent",
+        dateReported: "4/19/2026 8:45",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Alice Brown",
+        group: "",
+        description: "Password reset",
+        status: "New",
+        dateReported: "4/19/2026 12:00",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Charlie Wilson",
+        group: "",
+        description: "App crashes",
+        status: "Open",
+        dateReported: "4/18/2026 15:20",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Diana Prince",
+        group: "",
+        description: "Feature request",
+        status: "New",
+        dateReported: "4/18/2026 14:10",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Eve Adams",
+        group: "",
+        description: "Billing inquiry",
+        status: "Resolved",
+        dateReported: "4/17/2026 11:30",
+        dateResolved: "4/17/2026 12:00",
+      },
+      {
+        name: "Frank Miller",
+        group: "",
+        description: "Slow performance",
+        status: "Urgent",
+        dateReported: "4/17/2026 10:15",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Grace Lee",
+        group: "",
+        description: "Data sync issue",
+        status: "Open",
+        dateReported: "4/16/2026 16:45",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Henry Ford",
+        group: "",
+        description: "UI bug",
+        status: "New",
+        dateReported: "4/16/2026 13:20",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Ivy Chen",
+        group: "",
+        description: "Email not received",
+        status: "Resolved",
+        dateReported: "4/15/2026 9:00",
+        dateResolved: "4/15/2026 9:30",
+      },
+      {
+        name: "Jack Ryan",
+        group: "",
+        description: "Security concern",
+        status: "Urgent",
+        dateReported: "4/15/2026 8:30",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Kate Moss",
+        group: "",
+        description: "Mobile app issue",
+        status: "Open",
+        dateReported: "4/14/2026 17:10",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Liam Neeson",
+        group: "",
+        description: "Account upgrade",
+        status: "New",
+        dateReported: "4/14/2026 14:45",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Mia Khalifa",
+        group: "",
+        description: "Refund request",
+        status: "Resolved",
+        dateReported: "4/13/2026 12:00",
+        dateResolved: "4/13/2026 12:30",
+      },
+      {
+        name: "Noah Ark",
+        group: "",
+        description: "API error",
+        status: "Urgent",
+        dateReported: "4/13/2026 11:15",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Olivia Pope",
+        group: "",
+        description: "Login timeout",
+        status: "Open",
+        dateReported: "4/12/2026 15:30",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Peter Parker",
+        group: "",
+        description: "Spider sense tingling",
+        status: "New",
+        dateReported: "4/12/2026 13:00",
+        dateResolved: "N/A",
+      },
+      {
+        name: "Quinn Fabray",
+        group: "",
+        description: "Voice call issue",
+        status: "Resolved",
+        dateReported: "4/11/2026 10:45",
+        dateResolved: "4/11/2026 11:15",
+      },
+      {
+        name: "Ryan Gosling",
+        group: "",
+        description: "Profile update",
+        status: "New",
+        dateReported: "4/11/2026 9:20",
+        dateResolved: "N/A",
+      },
+    ];
+
+    const sampleAgents: Agent[] = [
+      { name: "John Doe", position: "Custodian", department: "Sanitation" },
+      { name: "Jane Doe", position: "Manager", department: "Front End" },
+      { name: "Mary Alvarez", position: "Cashier", department: "Front End" },
+      { name: "Bob Smith", position: "Developer", department: "Back End" },
+      { name: "Alice Johnson", position: "Designer", department: "UI/UX" },
+      { name: "Charlie Brown", position: "Analyst", department: "Data" },
+      {
+        name: "Diana Ross",
+        position: "Support Lead",
+        department: "Customer Service",
+      },
+      {
+        name: "Eve Wilson",
+        position: "QA Tester",
+        department: "Quality Assurance",
+      },
+      {
+        name: "Frank Sinatra",
+        position: "DevOps Engineer",
+        department: "Infrastructure",
+      },
+      {
+        name: "Grace Hopper",
+        position: "Senior Developer",
+        department: "Back End",
+      },
+      {
+        name: "Henry Ford",
+        position: "Product Manager",
+        department: "Product",
+      },
+      { name: "Ivy League", position: "Intern", department: "Front End" },
+      {
+        name: "Jack Sparrow",
+        position: "Security Specialist",
+        department: "Security",
+      },
+    ];
+
+    setLogs(sampleLogs);
+    setAgents(sampleAgents);
+  }
 
   function handleChange(
     e: React.ChangeEvent<
@@ -58,7 +286,7 @@ export default function Home() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleLogSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleLogSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const now = new Date();
@@ -91,11 +319,23 @@ export default function Home() {
         <h1 id="app-title">Customer Interaction Logger Application</h1>
         <hr className="header-hr" />
         <h1>Dashboard</h1>
+        <button
+          onClick={loadSampleData}
+          style={{
+            marginBottom: "20px",
+            padding: "10px 20px",
+            fontSize: "16px",
+          }}
+        >
+          Load Sample Data
+        </button>
 
         <div className="dashboard">
           <div className="dash-col">
             Report Status
-            {isChartReady && <PieChart data={statusChartData} />}
+            {isChartReady && (
+              <PieChart data={statusChartData} colors={statusChartColors} />
+            )}
           </div>
           <div className="dash-col" id="dash-urgent">
             Urgent Issues
@@ -123,13 +363,14 @@ export default function Home() {
             {urgentLogs}
           </div>
           <div className="log-col" id="new-log-col">
-            New Logs: {newLogs}
+            <i className="fa-solid fa-star"></i> New Logs: {newLogs}
           </div>
           <div className="log-col" id="open-log-col">
+            <i className="fa-solid fa-folder-open"></i>
             Open Logs: {openLogs}
           </div>
           <div className="log-col" id="closed-log-col">
-            Closed Logs: {closedLogs}
+            <i className="fa-solid fa-lock"></i>Closed Logs: {closedLogs}
           </div>
         </div>
 
@@ -140,7 +381,6 @@ export default function Home() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Group</th>
               <th>Description</th>
               <th>Status</th>
               <th>Date/Time Reported</th>
@@ -150,7 +390,7 @@ export default function Home() {
                   className="new-log-button"
                   onClick={() => setShowModal(true)}
                 >
-                  Create New Log
+                  <i className="fa-solid fa-plus"></i>
                 </button>
               </th>
             </tr>
@@ -159,7 +399,6 @@ export default function Home() {
             {logs.map((log, i) => (
               <tr key={i}>
                 <td>{log.name}</td>
-                <td>{log.group}</td>
                 <td id="log-desc">{log.description}</td>
                 <td>{log.status}</td>
                 <td>{log.dateReported}</td>
@@ -193,18 +432,6 @@ export default function Home() {
                   onChange={handleChange}
                   required
                 />
-
-                <label>Group</label>
-                <select
-                  name="group"
-                  value={form.group}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Select --</option>
-                  <option value="Employee">Employee</option>
-                  <option value="Customer">Customer</option>
-                </select>
 
                 <label>Description</label>
                 <textarea
@@ -258,36 +485,18 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>John Doe</td>
-              <td>Custodian</td>
-              <td>Sanitation</td>
-              <td>
-                <button>
-                  <i className="fa-solid fa-pen-to-square"></i>Edit
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Jane Doe</td>
-              <td>Manager</td>
-              <td>Front End</td>
-              <td>
-                <button>
-                  <i className="fa-solid fa-pen-to-square"></i>Edit
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Mary Alvarez</td>
-              <td>Cashier</td>
-              <td>Front End</td>
-              <td>
-                <button>
-                  <i className="fa-solid fa-pen-to-square"></i>Edit
-                </button>
-              </td>
-            </tr>
+            {agents.map((agent, i) => (
+              <tr key={i}>
+                <td>{agent.name}</td>
+                <td>{agent.position}</td>
+                <td>{agent.department}</td>
+                <td>
+                  <button className="agent-edit-btn">
+                    <i className="fa-solid fa-pen-to-square"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

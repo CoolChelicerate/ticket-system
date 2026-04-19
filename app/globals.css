@@ -1,3 +1,7 @@
+body {
+  font-family: "Inter", sans-serif;
+}
+
 h1 {
   text-align: center;
 }
@@ -125,22 +129,22 @@ h1 {
 }
 
 #urgent-log-col {
-  background-color: royalblue;
+  background-color: #b22222;
   color: white;
 }
 
 #new-log-col {
-  background-color: red;
+  background-color: #006400;
   color: white;
 }
 
 #open-log-col {
-  background-color: orange;
+  background-color: #00008b;
   color: white;
 }
 
 #closed-log-col {
-  background-color: green;
+  background-color: #daa520;
   color: white;
 }
 
@@ -179,6 +183,7 @@ h1 {
   border: 1px solid #333;
   padding: 8px 12px;
   cursor: pointer;
+  font-family: "Inter", sans-serif;
 }
 
 .new-log-button:hover {
@@ -198,7 +203,7 @@ h1 {
 }
 
 .log-table th {
-  background-color: #04aa6d;
+  background-color: #006400;
   color: white;
 }
 
@@ -230,6 +235,16 @@ h1 {
 }
 
 .agent-table th {
-  background-color: #04aa6d;
+  background-color: #006400;
   color: white;
+}
+
+.agent-edit-btn {
+  border-radius: 15px;
+  background-color: white;
+  color: #000;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
 }
