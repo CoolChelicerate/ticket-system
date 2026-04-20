@@ -333,6 +333,14 @@ export default function Home() {
       <div>
         <h1 id="app-title">Customer Interaction Logger Application</h1>
       </div>
+      <div className="topnav">
+        <a className="active" href="#home">
+          Home
+        </a>
+        <a href="#about">About</a>
+        <a href="#profile">Profile</a>
+        <a href="#settings">Settings</a>
+      </div>
       <hr className="header-hr" />
       <h1>Dashboard</h1>
       <button
@@ -401,6 +409,11 @@ export default function Home() {
           <option value="resolved">Resolved</option>
           <option value="recent">Recent (last 24 hours)</option>
         </select>
+        <input
+          className="log-searchbar"
+          type="text"
+          placeholder="Search..."
+        ></input>
       </h2>
 
       <table className="log-table">

@@ -6,6 +6,40 @@ h1 {
   text-align: center;
 }
 
+.topnav {
+  overflow: hidden;
+  background-color: #e9e9e9;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #2196f3;
+  color: white;
+}
+
+.topnav input[type="text"] {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -184,6 +218,16 @@ h1 {
   border: 2px solid black;
   border-radius: 8px;
   cursor: pointer;
+  background-color: lightgray;
+}
+
+.log-searchbar {
+  font-family: "Inter", sans-serif;
+  padding: 4px 10px;
+  font-size: 20px;
+  border: 2px solid black;
+  border-radius: 8px;
+  cursor: text;
   background-color: lightgray;
 }
 
