@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 import "./globals.css";
 
 import { LineChart } from "react-chartkick";
@@ -49,6 +50,7 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<Log>(emptyForm);
   const [isChartReady, setIsChartReady] = useState(false);
+  const [filterBy, setFilterBy] = useState("none");
 
   const urgentLogs = logs.filter((log) => log.status === "Urgent").length;
   const newLogs = logs.filter((log) => log.status === "New").length;
@@ -56,6 +58,20 @@ export default function Home() {
   const closedLogs = logs.filter((log) => log.status === "Resolved").length;
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  const displayedLogs = logs.filter((log) => {
+    if (filterBy === "urgent") return log.status === "Urgent";
+    if (filterBy === "new") return log.status === "New";
+    if (filterBy === "open") return log.status === "Open";
+    if (filterBy === "resolved") return log.status === "Resolved";
+    if (filterBy === "recent") {
+      const reported = new Date(log.dateReported);
+      const now = new Date();
+      const diffHours = (now.getTime() - reported.getTime()) / (1000 * 60 * 60);
+      return diffHours <= 24;
+    }
+    return true;
+  });
 
   const statusChartData = {
     Urgent: urgentLogs,
@@ -309,197 +325,195 @@ export default function Home() {
   }
   return (
     <>
-      <head>
-        <script
-          src="https://kit.fontawesome.com/32c2532505.js"
-          crossOrigin="anonymous"
-        ></script>
-      </head>
+      <Script
+        src="https://kit.fontawesome.com/32c2532505.js"
+        crossOrigin="anonymous"
+        strategy="beforeInteractive"
+      />
       <div>
         <h1 id="app-title">Customer Interaction Logger Application</h1>
-        <hr className="header-hr" />
-        <h1>Dashboard</h1>
-        <button
-          onClick={loadSampleData}
-          style={{
-            marginBottom: "20px",
-            padding: "10px 20px",
-            fontSize: "16px",
-          }}
-        >
-          Load Sample Data
-        </button>
-
-        <div className="dashboard">
-          <div className="dash-col">
-            Report Status
-            {isChartReady && (
-              <PieChart data={statusChartData} colors={statusChartColors} />
-            )}
-          </div>
-          <div className="dash-col" id="dash-urgent">
-            Urgent Issues
-            {logs.filter((log) => log.status === "Urgent").length > 0 ? (
-              <ul className="urgent-list">
-                {logs
-                  .filter((log) => log.status === "Urgent")
-                  .map((log, i) => (
-                    <li key={i}>
-                      {log.name} - {log.description}
-                    </li>
-                  ))}
-              </ul>
-            ) : (
-              <p style={{ fontSize: "25px" }}>All urgent issues resolved!</p>
-            )}
-          </div>
-          <div className="dash-col">Frequent Issues by Department</div>
-        </div>
-
-        <hr className="log-summary-hr" />
-        <div className="log-summary">
-          <div className="log-col" id="urgent-log-col">
-            <i className="fa-solid fa-circle-exclamation"></i> Urgent Logs:{" "}
-            {urgentLogs}
-          </div>
-          <div className="log-col" id="new-log-col">
-            <i className="fa-solid fa-star"></i> New Logs: {newLogs}
-          </div>
-          <div className="log-col" id="open-log-col">
-            <i className="fa-solid fa-folder-open"></i>
-            Open Logs: {openLogs}
-          </div>
-          <div className="log-col" id="closed-log-col">
-            <i className="fa-solid fa-lock"></i>Closed Logs: {closedLogs}
-          </div>
-        </div>
-
-        <h2 className="logs-header">
-          <i className="fa-solid fa-file-lines"></i> Logs
-        </h2>
-        <table className="log-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Date/Time Reported</th>
-              <th>Date/Time Resolved</th>
-              <th>
-                <button
-                  className="new-log-button"
-                  onClick={() => setShowModal(true)}
-                >
-                  <i className="fa-solid fa-plus"></i>
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map((log, i) => (
-              <tr key={i}>
-                <td>{log.name}</td>
-                <td id="log-desc">{log.description}</td>
-                <td>{log.status}</td>
-                <td>{log.dateReported}</td>
-                <td>{log.dateResolved}</td>
-                <td>
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      setForm(logs[i]);
-                      setEditIndex(i);
-                      setShowModal(true);
-                    }}
-                  >
-                    <i className="fa-solid fa-pen-to-square"></i>Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>New Log</h3>
-              <form onSubmit={handleLogSubmit}>
-                <label>Name</label>
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                />
-
-                <label>Description</label>
-                <textarea
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  required
-                />
-
-                <label>Status</label>
-                <select
-                  name="status"
-                  value={form.status}
-                  onChange={handleChange}
-                >
-                  <option value="New">New</option>
-                  <option value="Open">Open</option>
-                  <option value="Urgent">Urgent</option>
-                  <option value="Resolved">Resolved</option>
-                </select>
-
-                <label>Date/Time Resolved</label>
-                <input
-                  name="dateResolved"
-                  value={form.dateResolved}
-                  onChange={handleChange}
-                  placeholder="N/A"
-                />
-
-                <div className="modal-actions">
-                  <button type="submit">Submit</button>
-                  <button type="button" onClick={() => setShowModal(false)}>
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        <h2 className="agents-header">
-          <i className="fa-solid fa-user-tie"></i> Agents
-        </h2>
-        <table className="agent-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Position</th>
-              <th>Department</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {agents.map((agent, i) => (
-              <tr key={i}>
-                <td>{agent.name}</td>
-                <td>{agent.position}</td>
-                <td>{agent.department}</td>
-                <td>
-                  <button className="agent-edit-btn">
-                    <i className="fa-solid fa-pen-to-square"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
+      <hr className="header-hr" />
+      <h1>Dashboard</h1>
+      <button
+        onClick={loadSampleData}
+        style={{
+          marginBottom: "20px",
+          padding: "10px 20px",
+          fontSize: "16px",
+        }}
+      >
+        Load Sample Data
+      </button>
+      <div className="dashboard">
+        <div className="dash-col">
+          Report Status
+          {isChartReady && (
+            <PieChart data={statusChartData} colors={statusChartColors} />
+          )}
+        </div>
+        <div className="dash-col" id="dash-urgent">
+          Urgent Issues
+          {logs.filter((log) => log.status === "Urgent").length > 0 ? (
+            <ul className="urgent-list">
+              {logs
+                .filter((log) => log.status === "Urgent")
+                .map((log, i) => (
+                  <li key={i}>
+                    {log.name} - {log.description}
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p style={{ fontSize: "25px" }}>All urgent issues resolved!</p>
+          )}
+        </div>
+        <div className="dash-col">Frequent Issues by Department</div>
+      </div>
+      <hr className="log-summary-hr" />
+      <div className="log-summary">
+        <div className="log-col" id="urgent-log-col">
+          <i className="fa-solid fa-circle-exclamation"></i> Urgent Logs:{" "}
+          {urgentLogs}
+        </div>
+        <div className="log-col" id="new-log-col">
+          <i className="fa-solid fa-star"></i> New Logs: {newLogs}
+        </div>
+        <div className="log-col" id="open-log-col">
+          <i className="fa-solid fa-folder-open"></i>
+          Open Logs: {openLogs}
+        </div>
+        <div className="log-col" id="closed-log-col">
+          <i className="fa-solid fa-lock"></i>Closed Logs: {closedLogs}
+        </div>
+      </div>
+      <h2 className="logs-header">
+        <i className="fa-solid fa-file-lines"></i> Logs
+      </h2>
+      <select value={filterBy} onChange={(e) => setFilterBy(e.target.value)}>
+        <option value="none">All</option>
+        <option value="urgent">Urgent</option>
+        <option value="new">New</option>
+        <option value="open">Open</option>
+        <option value="resolved">Resolved</option>
+        <option value="recent">Recent (last 24 hours)</option>
+      </select>
+      <table className="log-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Date/Time Reported</th>
+            <th>Date/Time Resolved</th>
+            <th>
+              <button
+                className="new-log-button"
+                onClick={() => setShowModal(true)}
+              >
+                <i className="fa-solid fa-plus"></i>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {displayedLogs.map((log, i) => (
+            <tr key={i}>
+              <td>{log.name}</td>
+              <td id="log-desc">{log.description}</td>
+              <td>{log.status}</td>
+              <td>{log.dateReported}</td>
+              <td>{log.dateResolved}</td>
+              <td>
+                <button
+                  className="edit-btn"
+                  onClick={() => {
+                    setForm(logs[i]);
+                    setEditIndex(i);
+                    setShowModal(true);
+                  }}
+                >
+                  <i className="fa-solid fa-pen-to-square"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>New Log</h3>
+            <form onSubmit={handleLogSubmit}>
+              <label>Name</label>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+
+              <label>Description</label>
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                required
+              />
+
+              <label>Status</label>
+              <select name="status" value={form.status} onChange={handleChange}>
+                <option value="New">New</option>
+                <option value="Open">Open</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+
+              <label>Date/Time Resolved</label>
+              <input
+                name="dateResolved"
+                value={form.dateResolved}
+                onChange={handleChange}
+                placeholder="N/A"
+              />
+
+              <div className="modal-actions">
+                <button type="submit">Submit</button>
+                <button type="button" onClick={() => setShowModal(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <h2 className="agents-header">
+        <i className="fa-solid fa-user-tie"></i> Agents
+      </h2>
+      <table className="agent-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {agents.map((agent, i) => (
+            <tr key={i}>
+              <td>{agent.name}</td>
+              <td>{agent.position}</td>
+              <td>{agent.department}</td>
+              <td>
+                <button className="edit-btn">
+                  <i className="fa-solid fa-pen-to-square"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }
