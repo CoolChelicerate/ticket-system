@@ -170,6 +170,16 @@ h1 {
   font-size: 50px;
 }
 
+.logs-filter-dropdown {
+  font-family: "Inter", sans-serif;
+  padding: 6px 10px;
+  font-size: 16px;
+  border: 2px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: lightgray;
+}
+
 .log-table {
   width: 100%;
   text-align: center;

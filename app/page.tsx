@@ -388,16 +388,21 @@ export default function Home() {
         </div>
       </div>
       <h2 className="logs-header">
-        <i className="fa-solid fa-file-lines"></i> Logs
+        <i className="fa-solid fa-file-lines"></i> Logs{" "}
+        <select
+          className="logs-filter-dropdown"
+          value={filterBy}
+          onChange={(e) => setFilterBy(e.target.value)}
+        >
+          <option value="none">All</option>
+          <option value="urgent">Urgent</option>
+          <option value="new">New</option>
+          <option value="open">Open</option>
+          <option value="resolved">Resolved</option>
+          <option value="recent">Recent (last 24 hours)</option>
+        </select>
       </h2>
-      <select value={filterBy} onChange={(e) => setFilterBy(e.target.value)}>
-        <option value="none">All</option>
-        <option value="urgent">Urgent</option>
-        <option value="new">New</option>
-        <option value="open">Open</option>
-        <option value="resolved">Resolved</option>
-        <option value="recent">Recent (last 24 hours)</option>
-      </select>
+
       <table className="log-table">
         <thead>
           <tr>
