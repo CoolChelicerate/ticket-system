@@ -51,6 +51,7 @@ export default function Home() {
   const [form, setForm] = useState<Log>(emptyForm);
   const [isChartReady, setIsChartReady] = useState(false);
   const [filterBy, setFilterBy] = useState("none");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const urgentLogs = logs.filter((log) => log.status === "Urgent").length;
   const newLogs = logs.filter((log) => log.status === "New").length;
@@ -59,19 +60,48 @@ export default function Home() {
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const displayedLogs = logs.filter((log) => {
-    if (filterBy === "urgent") return log.status === "Urgent";
-    if (filterBy === "new") return log.status === "New";
-    if (filterBy === "open") return log.status === "Open";
-    if (filterBy === "resolved") return log.status === "Resolved";
-    if (filterBy === "recent") {
-      const reported = new Date(log.dateReported);
-      const now = new Date();
-      const diffHours = (now.getTime() - reported.getTime()) / (1000 * 60 * 60);
-      return diffHours <= 24;
-    }
-    return true;
-  });
+  const handleInputChange =
+    (setter: (value: string) => void) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+    };
+
+  const handleSelectChange =
+    (setter: (value: string) => void) =>
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setter(e.target.value);
+    };
+
+  const handleObjectChange =
+    (setter: React.Dispatch<React.SetStateAction<any>>) =>
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >,
+    ) => {
+      setter((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+  const displayedLogs = logs
+    .filter((log) => {
+      if (filterBy === "urgent") return log.status === "Urgent";
+      if (filterBy === "new") return log.status === "New";
+      if (filterBy === "open") return log.status === "Open";
+      if (filterBy === "resolved") return log.status === "Resolved";
+      if (filterBy === "recent") {
+        const reported = new Date(log.dateReported);
+        const now = new Date();
+        const diffHours =
+          (now.getTime() - reported.getTime()) / (1000 * 60 * 60);
+        return diffHours <= 24;
+      }
+      return true;
+    })
+    .filter(
+      (log) =>
+        log.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.description.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
 
   const statusChartData = {
     Urgent: urgentLogs,
@@ -294,14 +324,6 @@ export default function Home() {
     setAgents(sampleAgents);
   }
 
-  function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
   function handleLogSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -400,7 +422,7 @@ export default function Home() {
         <select
           className="logs-filter-dropdown"
           value={filterBy}
-          onChange={(e) => setFilterBy(e.target.value)}
+          onChange={handleSelectChange(setFilterBy)}
         >
           <option value="none">All</option>
           <option value="urgent">Urgent</option>
@@ -413,6 +435,8 @@ export default function Home() {
           className="log-searchbar"
           type="text"
           placeholder="Search..."
+          value={searchTerm}
+          onChange={handleInputChange(setSearchTerm)}
         ></input>
       </h2>
 
@@ -467,7 +491,7 @@ export default function Home() {
               <input
                 name="name"
                 value={form.name}
-                onChange={handleChange}
+                onChange={handleObjectChange(setForm)}
                 required
               />
 
@@ -475,12 +499,16 @@ export default function Home() {
               <textarea
                 name="description"
                 value={form.description}
-                onChange={handleChange}
+                onChange={handleObjectChange(setForm)}
                 required
               />
 
               <label>Status</label>
-              <select name="status" value={form.status} onChange={handleChange}>
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleObjectChange(setForm)}
+              >
                 <option value="New">New</option>
                 <option value="Open">Open</option>
                 <option value="Urgent">Urgent</option>
@@ -491,7 +519,7 @@ export default function Home() {
               <input
                 name="dateResolved"
                 value={form.dateResolved}
-                onChange={handleChange}
+                onChange={handleObjectChange(setForm)}
                 placeholder="N/A"
               />
 
