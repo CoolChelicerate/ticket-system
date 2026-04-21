@@ -6,10 +6,6 @@ h1 {
   text-align: center;
 }
 
-.logo-img {
-  height: 40px;
-}
-
 .header-container {
   display: flex;
   align-items: center;
@@ -140,9 +136,17 @@ h1 {
   text-align: center;
 }
 
-#dash-urgent ul {
-  font-weight: 100;
+.dash-col ul {
   list-style-type: none;
+}
+
+.dash-col li {
+  padding: 8px 0;
+  border-bottom: 1px solid lightgray;
+}
+
+#dash-urgent li {
+  font-weight: 100;
   text-align: justify;
 }
 
@@ -150,6 +154,34 @@ h1 {
   content: "";
   display: table;
   clear: both;
+}
+
+.category-pill {
+  padding: 2px 10px;
+  border-radius: 15px;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.billing {
+  background-color: lightblue;
+  color: steelblue;
+}
+.account {
+  background-color: lightgreen;
+  color: green;
+}
+.serverside {
+  background-color: lightsalmon;
+  color: darkred;
+}
+.clientside {
+  background-color: plum;
+  color: purple;
+}
+.miscellaneous {
+  background-color: lightyellow;
+  color: goldenrod;
 }
 
 .log-summary {

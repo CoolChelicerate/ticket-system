@@ -114,6 +114,14 @@ export default function Home() {
 
   const statusChartColors = ["#b22222", "#006400", "#00008b", "#daa520"];
 
+  const categoryCounts = logs.reduce(
+    (acc, log) => {
+      acc[log.category] = (acc[log.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
   useEffect(() => {
     setIsChartReady(true);
   }, []);
@@ -400,7 +408,27 @@ export default function Home() {
             <p style={{ fontSize: "25px" }}>All urgent issues resolved!</p>
           )}
         </div>
-        <div className="dash-col">Frequent Issues by Department</div>
+        <div className="dash-col" id="dash-freq">
+          Frequent Issues by Category
+          {logs.length > 0 ? (
+            <ul>
+              {Object.entries(categoryCounts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([category, count], i) => (
+                  <li key={i}>
+                    <span
+                      className={`category-pill ${category.toLowerCase().replace("-", "")}`}
+                    >
+                      {category}
+                    </span>
+                    : {count}
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p style={{ fontSize: "14px" }}>No data yet</p>
+          )}
+        </div>
       </div>
       <hr className="log-summary-hr" />
       <div className="log-summary">
