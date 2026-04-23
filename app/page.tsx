@@ -4,11 +4,13 @@ import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
 import LogTable from "./components/LogTable";
 import LogModal from "./components/LogModal";
+import Footer from "./components/Footer";
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "./globals.css";
 import "chartkick/chart.js";
+import AgentTable from "./components/AgentsTable";
 
 type PieChartProps = {
   data: Record<string, number>;
@@ -167,26 +169,12 @@ export default function Home() {
         categoryCounts={categoryCounts}
         isChartReady={isChartReady}
         loadSampleData={loadSampleData}
+        urgentLogs={urgentLogs}
+        newLogs={newLogs}
+        openLogs={openLogs}
+        closedLogs={closedLogs}
       />
-      {/*-------------------TODO: logSummary.tsx---------------------------*/}
       <hr className="log-summary-hr" />
-      <div className="log-summary">
-        <div className="log-col" id="urgent-log-col">
-          <i className="fa-solid fa-circle-exclamation"></i> Urgent Logs:{" "}
-          {urgentLogs}
-        </div>
-        <div className="log-col" id="new-log-col">
-          <i className="fa-solid fa-star"></i> New Logs: {newLogs}
-        </div>
-        <div className="log-col" id="open-log-col">
-          <i className="fa-solid fa-folder-open"></i>
-          Open Logs: {openLogs}
-        </div>
-        <div className="log-col" id="closed-log-col">
-          <i className="fa-solid fa-lock"></i>Closed Logs: {closedLogs}
-        </div>
-      </div>
-      {/*------------------------------------------------------------------*/}
       <LogTable
         displayedLogs={displayedLogs}
         logs={logs}
@@ -213,33 +201,8 @@ export default function Home() {
           setForm(emptyForm);
         }}
       />
-      <h2 className="agents-header">
-        <i className="fa-solid fa-user-tie"></i> Agents
-      </h2>
-      <table className="agent-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Department</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {agents.map((agent, i) => (
-            <tr key={i}>
-              <td>{agent.name}</td>
-              <td>{agent.position}</td>
-              <td>{agent.department}</td>
-              <td>
-                <button className="edit-btn">
-                  <i className="fa-solid fa-pen-to-square"></i>
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <AgentTable agents={agents} />
+      <Footer />
     </>
   );
 }
