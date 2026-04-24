@@ -1,14 +1,4 @@
 [
-  {
-    "name": "John Doe",
-    "position": "Custodian",
-    "department": "Sanitation"
-  },
-
-  { "name": "Jane Doe", "position": "Manager", "department": "Front End" },
-
-  { "name": "Mary Alvarez", "position": "Cashier", "department": "Front End" },
-
   { "name": "Bob Smith", "position": "Developer", "department": "Back End" },
 
   { "name": "Alice Johnson", "position": "Designer", "department": "UI/UX" },
